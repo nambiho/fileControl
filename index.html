@@ -1,52 +1,74 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link type="text/css" rel="stylesheet" href="./file.css" />
-    <title>Document</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<link type="text/css" rel="stylesheet" href="./file.css" />
+		<title>Document</title>
 </head>
 <body>
-    <div style="display:none;">
-        <input type="file" name="file" id="file" multiple>
-    </div>
-    <div id="fileBtn" class="fileBtn">File Open</div>
-    <div class="video_size_wrap">
-        <div class="video_wrap">
-            <video controls autoplay style="background-color:black;">
-                <!--source src="file:///Users/nambihomac/Desktop/MyBook/%E1%84%83%E1%85%A9%E1%86%BC%E1%84%8B%E1%85%A7%E1%86%BC%E1%84%89%E1%85%A1%E1%86%BC/test2018.mp4"-->
-            </video>
-        </div>
-    </div>
-    
-    <script>
-        var file = document.getElementById('file');
+		<div style="display:none;">
+				<input type="file" name="file" id="file" multiple>
+		</div>
+		<div id="fileBtn" class="fileBtn">File Open</div>
+		<div class="video_size_wrap">
+				<div class="video_wrap">
+						<video controls  style="background-color:black;">
+								<!--source src="file:///Users/nambihomac/Desktop/MyBook/%E1%84%83%E1%85%A9%E1%86%BC%E1%84%8B%E1%85%A7%E1%86%BC%E1%84%89%E1%85%A1%E1%86%BC/test2018.mp4"-->
+						</video>
+				</div>
+		</div>
+		<div>
+				1: <canvas id="canvas_capture1"></canvas>
+				2: <canvas id="canvas_capture2"></canvas>
+		</div>
+		
+		<script>
+				var file = document.getElementById('file');
+				var video = document.querySelector('.video_wrap video');
+				function on (es, handler) {
+						var that = this;
+						es.split(' ').forEach(function (evt) {
+								that.addEventListener(evt, handler);
+						});
+						return on.bind(this);
+				}
+				
 
-        function on (es, handler) {
-            var that = this;
-            es.split(' ').forEach(function (evt) {
-                that.addEventListener(evt, handler);
-            });
-            return on.bind(this);
-        }
-        
-        file.addEventListener('change', function (e) {
-            var file = this.files[0];
-            var type = file.type + '; codecs:';
-            var video = document.querySelector('.video_wrap video');
-            var canplay = video.canPlayType(type);
-            video.src = URL.createObjectURL(file);
-        }, false);
-        
-        on.call(Object(fileBtn), 'drag dragend dragenter dragexit dragleave dragover dragstart drop', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        })('drop', function (e) {
-            console.log('drop', e.dataTransfer.files);
-        })('click', function () {
-            file.click();
-        });
-    </script>
+				file.addEventListener('change', function (e) {
+						var file = this.files[0];
+						var type = file.type + '; codecs:h264';
+						
+						var canplay = video.canPlayType(type);
+						video.src = URL.createObjectURL(file);
+						var img = document.createElement('img');
+						
+						video.addEventListener('loadeddata', function (e) {
+							
+						});
+						
+						var seek = 1;
+						video.currentTime = 0;
+						video.addEventListener('ratechange', function (e) {
+							var canvas = document.querySelector('#canvas_capture' + seek++);
+							canvas.getContext('2d').drawImage(video, 0, 0, '300', '150');
+						});
+
+						video.currentTime = 150;
+						video.currentTime = 200;
+						// video.currentTime = 250;
+
+				}, false);
+				
+				on.call(Object(fileBtn), 'drag dragend dragenter dragexit dragleave dragover dragstart drop', function (e) {
+						e.preventDefault();
+						e.stopPropagation();
+				})('drop', function (e) {
+						console.log('drop', e.dataTransfer.files);
+				})('click', function () {
+						file.click();
+				});
+		</script>
 </body>
 </html>
